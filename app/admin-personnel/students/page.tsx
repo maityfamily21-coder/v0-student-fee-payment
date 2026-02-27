@@ -169,9 +169,9 @@ export default function StudentsPage() {
 
   // --- Effects (Preserved Logic) ---
   useEffect(() => {
-    const adminAuth = localStorage.getItem("adminAuth")
+    const adminAuth = localStorage.getItem("adminPersonnelAuth")
     if (!adminAuth) {
-      router.push("/admin/login")
+      router.push("/admin-personnel/login")
       return
     }
     const placedParam = searchParams?.get("placed")
@@ -191,8 +191,8 @@ export default function StudentsPage() {
   useEffect(() => {
     const loadCounts = async () => {
       try {
-        const adminAuth = localStorage.getItem("adminAuth")
-        const res = await fetch(`/api/admin/students/semester-counts`, {
+        const adminAuth = localStorage.getItem("adminPersonnelAuth")
+        const res = await fetch(`/api/admin-personnel/students/semester-counts`, {
           headers: { Authorization: `Bearer ${adminAuth}` },
         })
         if (!res.ok) return
@@ -217,8 +217,8 @@ export default function StudentsPage() {
     const fetchAttendance = async () => {
       try {
         setAttendanceLoading(true)
-        const adminAuth = localStorage.getItem("adminAuth")
-        const res = await fetch(`/api/admin/students/${viewStudent.id}/seminar-attendance`, {
+        const adminAuth = localStorage.getItem("adminPersonnelAuth")
+        const res = await fetch(`/api/admin-personnel/students/${viewStudent.id}/seminar-attendance`, {
           headers: { Authorization: `Bearer ${adminAuth}` },
         })
         const data = await res.json()
@@ -259,7 +259,7 @@ export default function StudentsPage() {
 
   const fetchData = async () => {
     try {
-      const adminAuth = localStorage.getItem("adminAuth")
+      const adminAuth = localStorage.getItem("adminPersonnelAuth")
       const headers = { Authorization: `Bearer ${adminAuth}` }
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -277,9 +277,9 @@ export default function StudentsPage() {
       }
 
       const [studentsRes, coursesRes, interestsRes] = await Promise.all([
-        fetch(`/api/admin/students?${params}`, { headers }),
-        fetch("/api/admin/courses", { headers }),
-        fetch("/api/admin/interests", { headers }),
+        fetch(`/api/admin-personnel/students?${params}`, { headers }),
+        fetch("/api/admin-personnel/courses", { headers }),
+        fetch("/api/admin-personnel/interests", { headers }),
       ])
 
       const [studentsData, coursesData, interestsData] = await Promise.all([
@@ -324,9 +324,9 @@ export default function StudentsPage() {
       }
     }
     try {
-      const url = editingStudent ? `/api/admin/students/${editingStudent.id}` : "/api/admin/students"
+      const url = editingStudent ? `/api/admin-personnel/students/${editingStudent.id}` : "/api/admin-personnel/students"
       const method = editingStudent ? "PUT" : "POST"
-      const adminAuth = localStorage.getItem("adminAuth")
+      const adminAuth = localStorage.getItem("adminPersonnelAuth")
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminAuth}` },
@@ -347,8 +347,8 @@ export default function StudentsPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this student?")) return
     try {
-      const adminAuth = localStorage.getItem("adminAuth")
-      const response = await fetch(`/api/admin/students/${id}`, {
+      const adminAuth = localStorage.getItem("adminPersonnelAuth")
+      const response = await fetch(`/api/admin-personnel/students/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${adminAuth}` },
       })
@@ -362,8 +362,8 @@ export default function StudentsPage() {
     if (!confirm("Are you sure you want to assign identification codes?")) return
     setIsAssigningCodes(true)
     try {
-      const adminAuth = localStorage.getItem("adminAuth")
-      const response = await fetch("/api/admin/students/assign-codes-retroactive", {
+      const adminAuth = localStorage.getItem("adminPersonnelAuth")
+      const response = await fetch("/api/admin-personnel/students/assign-codes-retroactive", {
         method: "POST",
         headers: { Authorization: `Bearer ${adminAuth}` },
       })
@@ -381,8 +381,8 @@ export default function StudentsPage() {
     }
     setIsSendingMessage(true)
     try {
-      const adminAuth = localStorage.getItem("adminAuth")
-      const res = await fetch("/api/admin/messages", {
+      const adminAuth = localStorage.getItem("adminPersonnelAuth")
+      const res = await fetch("/api/admin-personnel/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminAuth}` },
         body: JSON.stringify({
@@ -453,7 +453,7 @@ export default function StudentsPage() {
   const goToAction = (type: "seminar" | "message" | "company") => {
     if (selectedCombos.length === 0) { alert("Select at least one course-semester pair."); return }
     const cs = buildCsQuery()
-    const base = type === "seminar" ? "/admin/seminars" : type === "message" ? "/admin/messages" : "/admin/companies"
+    const base = type === "seminar" ? "/admin-personnel/seminars" : type === "message" ? "/admin-personnel/messages" : "/admin-personnel/companies"
     router.push(`${base}?prefill=course_semester&cs=${encodeURIComponent(cs)}`)
   }
   
@@ -557,7 +557,7 @@ export default function StudentsPage() {
         <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-white/10 pb-6">
           <div className="space-y-1">
              <div className="flex items-center gap-2 mb-2">
-                 <Button onClick={() => router.push("/admin/dashboard")} variant="ghost" size="sm" className="pl-0 hover:bg-transparent hover:text-indigo-600 dark:hover:text-indigo-400">
+                 <Button onClick={() => router.push("/admin-personnel/dashboard")} variant="ghost" size="sm" className="pl-0 hover:bg-transparent hover:text-indigo-600 dark:hover:text-indigo-400">
                     <ArrowLeft className="w-4 h-4 mr-1" /> Back to Dashboard
                  </Button>
             </div>
